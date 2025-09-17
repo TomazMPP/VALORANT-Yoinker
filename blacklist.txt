@@ -1,0 +1,19 @@
+# VALORANT Player Blacklist
+# Add one nickname per line (format: PlayerName#TAG)
+# Lines that start with # are comments and will be ignored
+#
+# INSTRUCTIONS:
+# 1. Add one name per line in the exact format: PlayerName#TAG
+# 2. You can copy and paste names directly from the game or from vRY
+# 3. The system is case-insensitive
+# 4. You can edit this file while vRY is running
+#
+# EXAMPLES (remove the # to enable):
+# ToxicPlayer#BR1
+# Cheater#NA1
+# AnotherBadPlayer#EU1
+
+HAKUNA#CHORA
+KAELA KOVALSKIA#
+DaVinski#lSo00
+maçã moment#maçã

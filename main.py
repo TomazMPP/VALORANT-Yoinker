@@ -37,6 +37,7 @@ from src.os import get_os
 from src.account_manager.account_manager import AccountManager
 from src.account_manager.account_config import AccountConfig
 from src.account_manager.account_auth import AccountAuth
+from src.blacklist import Blacklist
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
@@ -130,6 +131,9 @@ try:
     table = Table(cfg, log)
 
     stats = Stats()
+
+    # Initialize blacklist system 
+    blacklist = Blacklist(log)
 
     if cfg.get_feature_flag("discord_rpc"):
         rpc = Rpc(map_urls, gamemodes, colors, log)
@@ -271,6 +275,12 @@ try:
                 server = coregame_stats.get("GamePodID", "")
                 presences.wait_for_presence(namesClass.get_players_puuid(Players))
                 names = namesClass.get_names_from_puuids(Players)
+                
+                # Check blacklist - INGAME
+                blacklisted_players = blacklist.check_players(names)
+                if blacklisted_players:
+                    blacklist.print_blacklist_warning(blacklisted_players, "INGAME")
+                
                 loadouts_arr = loadoutsClass.get_match_loadouts(
                     coregame.get_coregame_match_id(),
                     Players,
@@ -592,6 +602,12 @@ try:
                 Players = pregame_stats["AllyTeam"]["Players"]
                 presences.wait_for_presence(namesClass.get_players_puuid(Players))
                 names = namesClass.get_names_from_puuids(Players)
+                
+                # Check blacklist - PREGAME
+                blacklisted_players = blacklist.check_players(names)
+                if blacklisted_players:
+                    blacklist.print_blacklist_warning(blacklisted_players, "PREGAME")
+                
                 # temporary until other regions gets fixed?
                 # loadouts = loadoutsClass.get_match_loadouts(pregame.get_pregame_match_id(), pregame_stats, cfg.weapon, valoApiSkins, names,
                 #   state="pregame")
@@ -811,6 +827,12 @@ try:
                 already_played_with = []
                 Players = menu.get_party_members(Requests.puuid, presence)
                 names = namesClass.get_names_from_puuids(Players)
+                
+                # Check blacklist - MENUS
+                blacklisted_players = blacklist.check_players(names)
+                if blacklisted_players:
+                    blacklist.print_blacklist_warning(blacklisted_players, "MENUS")
+                
                 playersLoaded = 1
                 with richConsole.status("Loading Players...") as status:
                     # with alive_bar(total=len(Players), title='Fetching Players', bar='classic2') as bar:
